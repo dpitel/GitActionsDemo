@@ -9,6 +9,10 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env: 
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  AZURE_WEBAPP_NAME: gh-actions
+
 jobs:
   build:
 
@@ -22,7 +26,17 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
+    
     - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet build --configuration Release
+
+    - name: Publish
+      run: dotnet publish -c Release  -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
+
+    - name: Deploy
+      uses: actions/checkout@v3
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        slot-name: 'development'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/myapp'
