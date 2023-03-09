@@ -3,11 +3,8 @@ name: 'Deploy to Azure App Service'
 on:
   push:
     branches: [ main ]
-<<<<<<< HEAD
-=======
-  pull_request:
+    pull_request:
     branches: [ main ]
->>>>>>> 7fd40a408e53d92c15977972a12b36e3a71cbea4
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: '.'
